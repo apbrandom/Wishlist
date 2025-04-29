@@ -22,6 +22,16 @@ struct ContentView: View {
                     Text(wish.title)
                         .font(.title.weight(.light))
                         .padding(.vertical, 2)
+                        .swipeActions(edge: .leading) {
+                            Button("Delete", role: .destructive) {
+                                modelContext.delete(wish)
+                            }
+                        }
+                        .swipeActions(edge: .trailing) {
+                            Button("Delete", role: .destructive) {
+                                modelContext.delete(wish)
+                            }
+                        }
                 }
                 
             } //: LIST
@@ -34,17 +44,21 @@ struct ContentView: View {
                         Image(systemName: "plus")
                             .imageScale(.large)
                     }
-                    
+                }
+                if wishes.isEmpty != true {
+                    ToolbarItem(placement: .bottomBar) {
+                        Text("\(wishes.count) wish\(wishes.count > 1 ? "es" : "")")
+                    }
                 }
             }
             .alert("Create a new wish", isPresented: $isAlertShownig) {
                 TextField("Enter a wish", text: $newWishTitle)
                 Button {
-                    
+                    modelContext.insert(Wish(title: newWishTitle))
+                    newWishTitle = ""
                 } label: {
                     Text("Save")
                 }
-
             }
             
             .overlay {
